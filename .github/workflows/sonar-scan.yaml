@@ -7,6 +7,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -23,9 +27,11 @@ jobs:
     - name: SonarQube Scan
       uses: SonarSource/sonarqube-scan-action@v2.1.0
       with:
-        host-url: ${{ secrets.SONAR_HOST_URL }}
-        token: ${{ secrets.SONAR_TOKEN }}
-        
+        projectBaseDir: .
+        args: >
+          -Dsonar.organization=my-org
+          -Dsonar.projectKey=my-Java-web-app
+
       # Check the Quality Gate status.
     - name: SonarQube Quality Gate check
       id: sonarqube-quality-gate-check
